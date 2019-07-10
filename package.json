@@ -14,6 +14,22 @@
     "eslint-plugin-extra-rules": "^0.6.1",
     "eslint-plugin-node": "^2.0.0",
     "eslint-plugin-spellcheck": "0.0.7",
-    "eslint-plugin-xo": "^0.5.1"
-  }
+    "eslint-plugin-xo": "^0.5.1",
+    "jest": "^24.8.0"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahn-gan/pos_v1-2019-6-13-7-40-25-697.git"
+  },
+  "author": "Akin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahn-gan/pos_v1-2019-6-13-7-40-25-697/issues"
+  },
+  "homepage": "https://github.com/ahn-gan/pos_v1-2019-6-13-7-40-25-697#readme"
 }

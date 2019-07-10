@@ -1,5 +1,10 @@
 'use strict';
 
+const Main = require('../main/main');
+
+const printReceipt = Main.printReceipt;
+
+
 describe('pos', () => {
 
   it('should print text', () => {
