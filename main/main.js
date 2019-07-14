@@ -87,6 +87,16 @@ const calculateReceipt = (receiptItems) => {
     return {'receiptItems': receiptItems, 'total': total, 'saving': saving};
 }
 
+const renderReceipt = (receipt) => {
+    let itemDetails = '***<没钱赚商店>收据***\n';
+    receipt.receiptItems.forEach(item => {
+        itemDetails += '名称：' + item.name + '，数量：' + item.count + item.unit + '，单价：' + item.price.toFixed(2) + '(元)，小计：' + item.subtotal.toFixed(2) + '(元)\n';
+    });
+    itemDetails += '----------------------\n';
+    itemDetails += '总计：' + receipt.total.toFixed(2) + '(元)\n节省：' + receipt.saving.toFixed(2) + '(元)\n';
+    itemDetails += '**********************';
+    return itemDetails;
+}
 
 
 
@@ -149,21 +159,21 @@ const renderTotalDetail = (totalAmount, saveAmount) => {
     return '总计：' + totalAmount + '(元)\n节省：' + saveAmount + '(元)';
 }
 
-const renderReceipt = (itemList) => {
-    let receipt = '***<没钱赚商店>收据***\n';
-    const promotionsDetail = loadPromotions();
-
-    let detailItemList = handleItemAmount(itemList, promotionsDetail);
-    let totalAmount = '' + calculateTotalAmount(detailItemList);
-    let saveAmount = '' + calculateSaveAmount(detailItemList);
-    let itemDetails = renderItemDetail(detailItemList);
-    let totalDetails = renderTotalDetail(totalAmount, saveAmount);
-    receipt += itemDetails;
-    receipt += '----------------------\n';
-    receipt += totalDetails;
-    receipt += '\n**********************';
-    return receipt;
-}
+// const renderReceipt = (itemList) => {
+//     let receipt = '***<没钱赚商店>收据***\n';
+//     const promotionsDetail = loadPromotions();
+//
+//     let detailItemList = handleItemAmount(itemList, promotionsDetail);
+//     let totalAmount = '' + calculateTotalAmount(detailItemList);
+//     let saveAmount = '' + calculateSaveAmount(detailItemList);
+//     let itemDetails = renderItemDetail(detailItemList);
+//     let totalDetails = renderTotalDetail(totalAmount, saveAmount);
+//     receipt += itemDetails;
+//     receipt += '----------------------\n';
+//     receipt += totalDetails;
+//     receipt += '\n**********************';
+//     return receipt;
+// }
 
 
 module.exports = {
@@ -174,12 +184,13 @@ module.exports = {
     calculateReceiptTotal,
     calculateReceiptSaving,
     calculateReceipt,
+    renderReceipt,
     handleMapToItemList,
     handleItemAmount,
     calculateTotalAmount,
     calculateSaveAmount,
     renderItemDetail,
     renderTotalDetail,
-    renderReceipt,
+    // renderReceipt,
     printReceipt
 };
