@@ -57,6 +57,18 @@ const decodeTags = (tags) => {
     return combineItems(decodeBarcodes(tags));
 }
 
+const promoteReceiptItems = (items, promotions) => {
+
+    const promotionsBarcodes = promotions[0].barcodes;
+    return items.map(item =>
+    {
+        promotionsBarcodes.indexOf(item.barcode) > -1 && item.count > 2 ? item['subtotal'] = parseFloat((item.price * (item.count - parseInt(item.count / 3)))).toFixed(2) : item['subtotal'] = parseFloat((item.price * item.count)).toFixed(2)
+        return item;
+    }
+    );
+    // return itemList;
+}
+
 
 const handleMapToItemList = (barcodeMap) => {
     const allItems = loadAllItems();
@@ -138,6 +150,7 @@ module.exports = {
     decodeBarcodes,
     combineItems,
     decodeTags,
+    promoteReceiptItems,
     handleMapToItemList,
     handleItemAmount,
     calculateTotalAmount,

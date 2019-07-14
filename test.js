@@ -27,6 +27,8 @@ const combineItems = Main.combineItems;
 
 const decodeTags = Main.decodeTags;
 
+const promoteReceiptItems = Main.promoteReceiptItems;
+
 
 // test for function isStartSmallerThanOrEqualToEnd
 
@@ -55,7 +57,7 @@ it('should return items when given decodedBarcodes', () => {
         {"barcode": "ITEM000001", "count": 5},
         {"barcode": "ITEM000003", "count": 2.5},
         {"barcode": "ITEM000005", "count": 3}
-        ];
+    ];
 
     let expectResult = [
         {
@@ -122,6 +124,66 @@ it('should return items when given tags', () => {
     ];
     expect(JSON.stringify(decodeTags(tags))).toBe(JSON.stringify(expectResult));
 });
+
+it('should return receiptItems when given items and promotions', () => {
+    const promotions = loadPromotions();
+
+    const items = [
+        {
+            "barcode": "ITEM000001",
+            "name": "雪碧",
+            "unit": "瓶",
+            "price": 3,
+            "count": 5,
+        },
+        {
+            "barcode": "ITEM000003",
+            "name": "荔枝",
+            "unit": "斤",
+            "price": 15,
+            "count": 2.5,
+        },
+        {
+            "barcode": "ITEM000005",
+            "name": "方便面",
+            "unit": "袋",
+            "price": 4.5,
+            "count": 3,
+        }
+    ];
+
+    const expectResult = [
+        {
+            "barcode": "ITEM000001",
+            "name": "雪碧",
+            "unit": "瓶",
+            "price": 3,
+            "count": 5,
+            "subtotal": 12.00.toFixed(2),
+        },
+        {
+            "barcode": "ITEM000003",
+            "name": "荔枝",
+            "unit": "斤",
+            "price": 15,
+            "count": 2.5,
+            "subtotal": 37.50.toFixed(2),
+        },
+        {
+            "barcode": "ITEM000005",
+            "name": "方便面",
+            "unit": "袋",
+            "price": 4.5,
+            "count": 3,
+            "subtotal": 9.00.toFixed(2),
+        }
+    ];
+
+    expect(JSON.stringify(promoteReceiptItems(items, promotions))).toBe(JSON.stringify(expectResult));
+    // expect(promoteReceiptItems(items, promotions)).toStrictEqual(expectResult);
+});
+
+//===============================================================
 
 // pass
 
