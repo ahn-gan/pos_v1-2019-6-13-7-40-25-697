@@ -58,16 +58,30 @@ const decodeTags = (tags) => {
 }
 
 const promoteReceiptItems = (items, promotions) => {
-
     const promotionsBarcodes = promotions[0].barcodes;
-    return items.map(item =>
-    {
+    return items.map(item => {
         promotionsBarcodes.indexOf(item.barcode) > -1 && item.count > 2 ? item['subtotal'] = parseFloat((item.price * (item.count - parseInt(item.count / 3)))).toFixed(2) : item['subtotal'] = parseFloat((item.price * item.count)).toFixed(2)
         return item;
-    }
-    );
-    // return itemList;
+    });
 }
+
+const calculateReceiptTotal = (receiptItems) => {
+    let totalAmount = 0;
+    receiptItems.forEach(item => {
+        totalAmount += parseFloat(item.subtotal);
+    });
+    return totalAmount.toFixed(2);
+}
+
+const calculateReceiptSaving = (receiptItems) => {
+    let saveAmount = 0;
+    receiptItems.forEach(item => {
+        saveAmount += item.price * item.count - item.subtotal;
+    });
+    return saveAmount.toFixed(2);
+}
+
+
 
 
 const handleMapToItemList = (barcodeMap) => {
@@ -151,6 +165,8 @@ module.exports = {
     combineItems,
     decodeTags,
     promoteReceiptItems,
+    calculateReceiptTotal,
+    calculateReceiptSaving,
     handleMapToItemList,
     handleItemAmount,
     calculateTotalAmount,
