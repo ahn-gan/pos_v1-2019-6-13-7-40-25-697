@@ -70,7 +70,7 @@ const calculateReceiptTotal = (receiptItems) => {
     receiptItems.forEach(item => {
         totalAmount += parseFloat(item.subtotal);
     });
-    return totalAmount.toFixed(2);
+    return totalAmount;
 }
 
 const calculateReceiptSaving = (receiptItems) => {
@@ -78,7 +78,13 @@ const calculateReceiptSaving = (receiptItems) => {
     receiptItems.forEach(item => {
         saveAmount += item.price * item.count - item.subtotal;
     });
-    return saveAmount.toFixed(2);
+    return saveAmount;
+}
+
+const calculateReceipt = (receiptItems) => {
+    let total = calculateReceiptTotal(receiptItems);
+    let saving = calculateReceiptSaving(receiptItems);
+    return {'receiptItems': receiptItems, 'total': total, 'saving': saving};
 }
 
 
@@ -167,6 +173,7 @@ module.exports = {
     promoteReceiptItems,
     calculateReceiptTotal,
     calculateReceiptSaving,
+    calculateReceipt,
     handleMapToItemList,
     handleItemAmount,
     calculateTotalAmount,

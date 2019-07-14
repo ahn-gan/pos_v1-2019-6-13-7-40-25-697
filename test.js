@@ -33,6 +33,8 @@ const calculateReceiptTotal = Main.calculateReceiptTotal;
 
 const calculateReceiptSaving = Main.calculateReceiptSaving;
 
+const calculateReceipt = Main.calculateReceipt;
+
 
 // test for function isStartSmallerThanOrEqualToEnd
 
@@ -216,7 +218,7 @@ it('should return total when given receiptItems', () => {
         }
     ];
 
-    expect(calculateReceiptTotal(receiptItems)).toBe(58.50.toFixed(2));
+    expect(calculateReceiptTotal(receiptItems)).toBe(58.50);
 });
 
 it('should return saving when given receiptItems', () => {
@@ -248,7 +250,72 @@ it('should return saving when given receiptItems', () => {
         }
     ];
 
-    expect(calculateReceiptSaving(receiptItems)).toBe(7.50.toFixed(2));
+    expect(calculateReceiptSaving(receiptItems)).toBe(7.50);
+});
+
+
+it('should return receipt when given receiptItems', () => {
+
+    const receiptItems = [
+        {
+            "barcode": "ITEM000001",
+            "name": "雪碧",
+            "unit": "瓶",
+            "price": 3,
+            "count": 5,
+            "subtotal": 12.00,
+        },
+        {
+            "barcode": "ITEM000003",
+            "name": "荔枝",
+            "unit": "斤",
+            "price": 15,
+            "count": 2.5,
+            "subtotal": 37.50,
+        },
+        {
+            "barcode": "ITEM000005",
+            "name": "方便面",
+            "unit": "袋",
+            "price": 4.5,
+            "count": 3,
+            "subtotal": 9.00,
+        }
+    ];
+
+    const receipt = {
+        "receiptItems": [
+            {
+                "barcode": "ITEM000001",
+                "name": "雪碧",
+                "unit": "瓶",
+                "price": 3,
+                "count": 5,
+                "subtotal": 12.00,
+            },
+            {
+                "barcode": "ITEM000003",
+                "name": "荔枝",
+                "unit": "斤",
+                "price": 15,
+                "count": 2.5,
+                "subtotal": 37.50,
+            },
+            {
+                "barcode": "ITEM000005",
+                "name": "方便面",
+                "unit": "袋",
+                "price": 4.5,
+                "count": 3,
+                "subtotal": 9.00,
+            }
+        ],
+        "total": 58.50,
+        "saving": 7.50
+    };
+
+    expect(JSON.stringify(calculateReceipt(receiptItems))).toBe(JSON.stringify(receipt));
+    expect(calculateReceipt(receiptItems)).toStrictEqual(receipt);
 });
 
 //===============================================================
