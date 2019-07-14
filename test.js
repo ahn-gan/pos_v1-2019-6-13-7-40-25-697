@@ -23,12 +23,16 @@ const renderReceipt = Main.renderReceipt;
 
 const printReceipt = Main.printReceipt;
 
+const combineItems = Main.combineItems;
+
+const decodeTags = Main.decodeTags;
+
 
 // test for function isStartSmallerThanOrEqualToEnd
 
 // pass
 
-it ('should return itemMap when given barcodes', () => {
+it('should return decodedBarcodes when given barcodes', () => {
     const tags = [
         'ITEM000001',
         'ITEM000001',
@@ -39,16 +43,89 @@ it ('should return itemMap when given barcodes', () => {
         'ITEM000005',
         'ITEM000005-2',
     ];
-    let result = new Map();
-    result.set("ITEM000001", 5);
-    result.set("ITEM000003", 2.5);
-    result.set("ITEM000005", 3);
-    expect(JSON.stringify(decodeBarcodes(tags))).toBe(JSON.stringify(result));
+    let expectResult = [{"barcode": "ITEM000001", "count": 5}, {
+        "barcode": "ITEM000003",
+        "count": 2.5
+    }, {"barcode": "ITEM000005", "count": 3}];
+    expect(JSON.stringify(decodeBarcodes(tags))).toBe(JSON.stringify(expectResult));
+});
+
+it('should return items when given decodedBarcodes', () => {
+    let decodedBarcodes = [
+        {"barcode": "ITEM000001", "count": 5},
+        {"barcode": "ITEM000003", "count": 2.5},
+        {"barcode": "ITEM000005", "count": 3}
+        ];
+
+    let expectResult = [
+        {
+            "barcode": "ITEM000001",
+            "name": "雪碧",
+            "unit": "瓶",
+            "price": 3,
+            "count": 5,
+        },
+        {
+            "barcode": "ITEM000003",
+            "name": "荔枝",
+            "unit": "斤",
+            "price": 15,
+            "count": 2.5,
+        },
+        {
+            "barcode": "ITEM000005",
+            "name": "方便面",
+            "unit": "袋",
+            "price": 4.5,
+            "count": 3,
+        }
+    ];
+    expect(JSON.stringify(combineItems(decodedBarcodes))).toBe(JSON.stringify(expectResult));
+    // expect(combineItems(decodedBarcodes)).toStrictEqual(expectResult);
+});
+
+// pass
+it('should return items when given tags', () => {
+    const tags = [
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000003-2.5',
+        'ITEM000005',
+        'ITEM000005-2',
+    ];
+
+    const expectResult = [
+        {
+            "barcode": "ITEM000001",
+            "name": "雪碧",
+            "unit": "瓶",
+            "price": 3,
+            "count": 5,
+        },
+        {
+            "barcode": "ITEM000003",
+            "name": "荔枝",
+            "unit": "斤",
+            "price": 15,
+            "count": 2.5,
+        },
+        {
+            "barcode": "ITEM000005",
+            "name": "方便面",
+            "unit": "袋",
+            "price": 4.5,
+            "count": 3,
+        }
+    ];
+    expect(JSON.stringify(decodeTags(tags))).toBe(JSON.stringify(expectResult));
 });
 
 // pass
 
-it ('should return itemList when given itemMap', () => {
+it('should return itemList when given itemMap', () => {
     let itemMap = new Map();
     itemMap.set("ITEM000001", 5);
     itemMap.set("ITEM000003", 2.5);
@@ -65,60 +142,60 @@ it ('should return itemList when given itemMap', () => {
 
 // pass
 
-it ('should return itemList with subAmount when given itemList', () => {
+it('should return itemList with subAmount when given itemList', () => {
     const promotionsDetail = loadPromotions();
 
     const itemList = [
         {"barcode": "ITEM000001", "name": "雪碧", "unit": "瓶", "price": 3, "count": 5},
         {"barcode": "ITEM000003", "name": "荔枝", "unit": "斤", "price": 15, "count": 2.5},
         {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3}
-        ];
+    ];
 
     const expectValue = [
         {"barcode": "ITEM000001", "name": "雪碧", "unit": "瓶", "price": 3, "count": 5, "subAmount": 12.00.toFixed(2)},
         {"barcode": "ITEM000003", "name": "荔枝", "unit": "斤", "price": 15, "count": 2.5, "subAmount": 37.50.toFixed(2)},
-        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9 .toFixed(2)}
-        ];
+        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9.00.toFixed(2)}
+    ];
 
-        expect(JSON.stringify(handleItemAmount(itemList, promotionsDetail))).toBe(JSON.stringify(expectValue));
+    expect(JSON.stringify(handleItemAmount(itemList, promotionsDetail))).toBe(JSON.stringify(expectValue));
 });
 
 
 // pass
-it ('should return totalAmount when given itemList', () => {
+it('should return totalAmount when given itemList', () => {
 
     const itemList = [
         {"barcode": "ITEM000001", "name": "雪碧", "unit": "瓶", "price": 3, "count": 5, "subAmount": 12.00.toFixed(2)},
         {"barcode": "ITEM000003", "name": "荔枝", "unit": "斤", "price": 15, "count": 2.5, "subAmount": 37.50.toFixed(2)},
-        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9 .toFixed(2)}
-        ];
+        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9.00.toFixed(2)}
+    ];
 
-        expect(calculateTotalAmount(itemList)).toBe(58.5.toFixed(2));
+    expect(calculateTotalAmount(itemList)).toBe(58.5.toFixed(2));
 });
 
 
 // pass
 
-it ('should return saveAmount when given itemList', () => {
+it('should return saveAmount when given itemList', () => {
 
     const itemList = [
         {"barcode": "ITEM000001", "name": "雪碧", "unit": "瓶", "price": 3, "count": 5, "subAmount": 12.00.toFixed(2)},
         {"barcode": "ITEM000003", "name": "荔枝", "unit": "斤", "price": 15, "count": 2.5, "subAmount": 37.50.toFixed(2)},
-        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9 .toFixed(2)}
-        ];
+        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9.00.toFixed(2)}
+    ];
 
-        expect(calculateSaveAmount(itemList)).toBe(7.5.toFixed(2));
+    expect(calculateSaveAmount(itemList)).toBe(7.5.toFixed(2));
 });
 
 // pass
 
-it ('should return itemDetails when given itemList', () => {
+it('should return itemDetails when given itemList', () => {
 
     const itemList = [
         {"barcode": "ITEM000001", "name": "雪碧", "unit": "瓶", "price": 3, "count": 5, "subAmount": 12.00.toFixed(2)},
         {"barcode": "ITEM000003", "name": "荔枝", "unit": "斤", "price": 15, "count": 2.5, "subAmount": 37.50.toFixed(2)},
-        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9 .toFixed(2)}
-        ];
+        {"barcode": "ITEM000005", "name": "方便面", "unit": "袋", "price": 4.5, "count": 3, "subAmount": 9.00.toFixed(2)}
+    ];
 
     const result = '名称：雪碧，数量：5瓶，单价：3.00(元)，小计：12.00(元)\n' +
         '名称：荔枝，数量：2.5斤，单价：15.00(元)，小计：37.50(元)\n' +
@@ -129,7 +206,7 @@ it ('should return itemDetails when given itemList', () => {
 
 // pass
 
-it ('should return totalDetails when given total and save amounts', () => {
+it('should return totalDetails when given total and save amounts', () => {
 
     const result = '总计：58.50(元)\n节省：7.50(元)';
 

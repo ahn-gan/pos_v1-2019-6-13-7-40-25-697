@@ -30,22 +30,47 @@ const decodeBarcodes = (tags) => {
             barcodeMap.set(tag, count);
         }
     });
-    return barcodeMap;
+    let result = [];
+    barcodeMap.forEach((value, key) => {
+        let obj = {
+            barcode: key,
+            count: value
+        };
+        result.push(obj);
+    });
+    return result;
 }
 
+const combineItems = (decodeBarcodes) => {
+    const allItems = loadAllItems();
+    return decodeBarcodes.map(decodebarcode => {
+        let filterItem = allItems.filter(val => {
+            return val.barcode === decodebarcode.barcode;
+        });
+        let itemObj = filterItem[0];
+        itemObj['count'] = decodebarcode.count;
+        return itemObj;
+    });
+}
+
+const decodeTags = (tags) => {
+    return combineItems(decodeBarcodes(tags));
+}
+
+
 const handleMapToItemList = (barcodeMap) => {
-     const allItems = loadAllItems();
-     let itemList = [];
-     barcodeMap.forEach((value, key) => {
-         let filterItem = allItems.filter(val => {
-             return val.barcode == key;
-         });
-         let itemObj = filterItem[0];
-         // itemObj['subAmount'] = filterItem[0].price * value;
-         itemObj['count'] = value;
-         itemList.push(itemObj);
-     });
-     return itemList;
+    const allItems = loadAllItems();
+    let itemList = [];
+    barcodeMap.forEach((value, key) => {
+        let filterItem = allItems.filter(val => {
+            return val.barcode == key;
+        });
+        let itemObj = filterItem[0];
+        // itemObj['subAmount'] = filterItem[0].price * value;
+        itemObj['count'] = value;
+        itemList.push(itemObj);
+    });
+    return itemList;
 }
 
 const handleItemAmount = (itemList, promotionsDetail) => {
@@ -111,6 +136,8 @@ const renderReceipt = (itemList) => {
 
 module.exports = {
     decodeBarcodes,
+    combineItems,
+    decodeTags,
     handleMapToItemList,
     handleItemAmount,
     calculateTotalAmount,
