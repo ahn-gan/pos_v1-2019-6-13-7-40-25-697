@@ -7,15 +7,6 @@ const loadAllItems = Api.loadAllItems;
 
 const loadPromotions = Api.loadPromotions;
 
-
-const printReceipt = (tags) => {
-    let barcodeMap = decodeBarcodes(tags);
-    let itemList = handleMapToItemList(barcodeMap);
-    let receipt = renderReceipt(itemList);
-    // console.log(receipt);
-    return receipt;
-};
-
 const decodeBarcodes = (tags) => {
     let barcodeMap = new Map();
     tags.forEach(tag => {
@@ -65,6 +56,11 @@ const promoteReceiptItems = (items, promotions) => {
     });
 }
 
+const calculateReceiptItems = (items) => {
+    const promotions = loadPromotions();
+    return promoteReceiptItems(items, promotions);
+}
+
 const calculateReceiptTotal = (receiptItems) => {
     let totalAmount = 0;
     receiptItems.forEach(item => {
@@ -90,13 +86,21 @@ const calculateReceipt = (receiptItems) => {
 const renderReceipt = (receipt) => {
     let itemDetails = '***<没钱赚商店>收据***\n';
     receipt.receiptItems.forEach(item => {
-        itemDetails += '名称：' + item.name + '，数量：' + item.count + item.unit + '，单价：' + item.price.toFixed(2) + '(元)，小计：' + item.subtotal.toFixed(2) + '(元)\n';
+        itemDetails += '名称：' + item.name + '，数量：' + item.count + item.unit + '，单价：' + item.price.toFixed(2) + '(元)，小计：' + parseFloat(item.subtotal).toFixed(2) + '(元)\n';
     });
     itemDetails += '----------------------\n';
     itemDetails += '总计：' + receipt.total.toFixed(2) + '(元)\n节省：' + receipt.saving.toFixed(2) + '(元)\n';
     itemDetails += '**********************';
     return itemDetails;
 }
+
+const printReceipt = (tags) => {
+    let items = decodeTags(tags);
+    let receiptItems = calculateReceiptItems(items);
+    let receipt = calculateReceipt(receiptItems);
+    let renderReceiptResult = renderReceipt(receipt);
+    return renderReceiptResult;
+};
 
 
 
@@ -181,6 +185,7 @@ module.exports = {
     combineItems,
     decodeTags,
     promoteReceiptItems,
+    calculateReceiptItems,
     calculateReceiptTotal,
     calculateReceiptSaving,
     calculateReceipt,
